@@ -1,0 +1,123 @@
+#
+# Copyright SecureKey Technologies Inc. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+#
+# Schema version of the content. Used by the SDK to apply the corresponding parsing rules.
+# 指定配置文件的版本。SDK根据这个版本号来解析文件内容
+#
+version: 1.0.0
+
+#
+# The client section used by GO SDK.
+# 包含与客户端相关的配置，如所属组织、日志级别、凭证存储路径、BCCSP配置等
+#
+client:
+  # Which organization does this application instance belong to? The value must be the name of an org
+  # defined under "organizations"
+  # 定义应用程序所属的组织名称
+  organization: org1
+
+  logging:
+    level: info
+
+  # Some SDKs support pluggable KV stores, the properties under "credentialStore"
+  # are implementation specific
+  # 用于指定hyperledger fabric sdk在本地保存和管理用户身份凭证的存储路径。
+  # path: 用于存储与用户身份相关的信息。这些数据是SDK在用户进行身份认证和交易签名时需要用到的。如果路径不存在，SDK会自动创建
+  # (注意：path用于存储与用户身份相关的信息，HSM主要管理的是加密密钥，而身份凭证数据（如用户的认证信息）仍然需要在本地保存，因此这个路径仍然是必要的)
+  # cryptoStore: 用于管理加密密钥的存储。这个路径下会存储与用户MSP相关的加密材料。如果使用HSM，则不需要配置
+#  credentialStore:
+#    # [Optional]. Used by user store. Not needed if all credentials are embedded in configuration
+#    # and enrollments are performed elswhere.
+#    path: "/home/savia/hsm/project/caProject/hfc-kvs"
+
+    # [Optional]. Specific to the CryptoSuite implementation used by GO SDK. Software-based implementations
+    # requiring a key store. PKCS#11 based implementations does not.
+#    cryptoStore:
+      # Specific to the underlying KeyValueStore that backs the crypto key store.
+#      path: /tmp/msp
+
+  # [Optional] BCCSP config for the client. Used by GO SDK.
+  # BCCSP配置
+  BCCSP:
+    security:
+      enabled: true
+      default:
+        provider: "PKCS11"
+      hashAlgorithm: "SHA2"
+      softVerify: true
+      level: 256
+      pin: "987654"
+      label: "fabric-hsm"
+      library: "/usr/lib/softhsm/libsofthsm2.so"
+#
+# list of participating organizations in this network
+#
+organizations:
+  org1:
+    mspid: Org1MSP
+
+    # This org's MSP store (absolute path or relative to client.cryptoconfig)
+    cryptoPath: /home/savia/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp
+
+#    peers:
+#      - peer0.org1.example.com
+
+    # [Optional]. Certificate Authorities issue certificates for identification purposes in a Fabric based
+    # network. Typically certificates provisioning is done in a separate process outside of the
+    # runtime network. Fabric-CA is a special certificate authority that provides a REST APIs for
+    # dynamic certificate management (enroll, revoke, re-enroll). The following section is only for
+    # Fabric-CA servers.
+    certificateAuthorities:
+      - ca-org1
+
+  # the profile will contain public information about organizations other than the one it belongs to.
+  # These are necessary information to make transaction lifecycles work, including MSP IDs and
+  # peers with a public URL to send transaction proposals. The file will not contain private
+  # information reserved for members of the organization, such as admin key and certificate,
+  # fabric-ca registrar enroll ID and secret, etc.
+#  org2:
+#    mspid: Org2MSP
+#
+#    # This org's MSP store (absolute path or relative to client.cryptoconfig)
+#    cryptoPath:  peerOrganizations/org2.example.com/users/{username}@org2.example.com/msp
+#
+#    peers:
+#      - peer0.org2.example.com
+#
+#    certificateAuthorities:
+#      - ca.org2.example.com
+#
+# Fabric-CA is a special kind of Certificate Authority provided by Hyperledger Fabric which allows
+# certificate management to be done via REST APIs. Application may choose to use a standard
+# Certificate Authority instead of Fabric-CA, in which case this section would not be specified.
+# 定义了网络中CA的连接信息和注册信息,包括CA的URL、TLS证书路径、客户端密钥和证书路径，以及用于用户注册的注册信息
+#
+certificateAuthorities:
+  ca-org1:
+    # [Optional] Default: Infer from hostname
+    url: https://localhost:7054
+    tlsCACerts:
+      # Comma-Separated list of paths
+      path: /home/savia/fabric-samples/test-network/organizations/fabric-ca/org1/ca-cert.pem
+      # Client key and cert for SSL handshake with Fabric CA
+#      client:
+#        key:
+#          path: ${FABRIC_SDK_GO_PROJECT_PATH}/${CRYPTOCONFIG_FIXTURES_PATH}/peerOrganizations/tls.example.com/users/User1@tls.example.com/tls/client.key
+#        cert:
+#          path: ${FABRIC_SDK_GO_PROJECT_PATH}/${CRYPTOCONFIG_FIXTURES_PATH}/peerOrganizations/tls.example.com/users/User1@tls.example.com/tls/client.crt
+
+    # Fabric-CA supports dynamic user enrollment via REST APIs. A "root" user, a.k.a registrar, is
+    # needed to enroll and invoke new users.
+    # 定义CA服务器的注册员(registrar)用户信息。这个用户具有足够的权限来注册新用户和新节点
+    # enrollId: registrar身份ID
+    # enrollSecret: registrar身份密钥
+    registrar:
+      enrollId: admin
+      enrollSecret: adminpw
+    # [Optional] The optional name of the CA.
+    # CA名称，如果再同一主机上允许多个CA示例，此选项可用于区分不同的CA
+    caName: ca-org1
