@@ -22,6 +22,7 @@ type UserRegistration struct {
 	UpdateAt       string `gorm:"column:update_at"`
 	Result         string `gorm:"column:result"`
 	Version        int    `gorm:"column:version"`
+	Password       string `gorm:"column:password"`
 }
 
 func (UserRegistration) TableName() string {
