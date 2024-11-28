@@ -70,9 +70,8 @@ type Hospital struct {
 
 // QueryMedicalFacilityNameAndID 根据指定类型与状态查询名字与id
 func QueryMedicalFacilityNameAndID(db *gorm.DB, facilityType string, status string) ([]Hospital, error) {
-
 	var hospitals []Hospital
-	result := db.Select("tmf_id,name").Where("facility_type = ? AND status = ?", facilityType, status).Find(&hospitals)
+	result := db.Model(&MedicalFacility{}).Select("tmf_id,name").Where("facility_type = ? AND status = ?", facilityType, status).Find(&hospitals)
 	if result.Error != nil {
 		return nil, fmt.Errorf("failed to query facilities: %v", result.Error)
 	}

@@ -55,6 +55,51 @@ func GetDepartmentsByHospitalID(db *gorm.DB, hospitalID string) ([]Department, e
 	return departments, nil
 }
 
+type DepartmentNameAndID struct {
+	TdID string `gorm:"primaryKey;column:td_id"`
+	Name string `gorm:"column:name"`
+}
+
+// GetDepartNameAndIdByHospitalID 根据医院id查询科室信息
+func GetDepartNameAndIdByHospitalID(db *gorm.DB, hospitalID, category string) ([]DepartmentNameAndID, error) {
+	var departments []DepartmentNameAndID
+	if err := db.Where("hospital_id = ? AND category = ?", hospitalID, category).Find(&departments).Error; err != nil {
+		return nil, err
+	}
+	return departments, nil
+}
+func GetDepartmentByHospitalID(db *gorm.DB, hospitalID string, category string) ([]Department, error) {
+	var departments []Department
+	if err := db.Where("hospital_id = ? AND category = ?", hospitalID).Find(&departments).Error; err != nil {
+		return nil, err
+	}
+	return departments, nil
+}
+
+// GetCategoriesByHospitalID 查询指定医院的所有科室类别
+func GetCategoriesByHospitalID(db *gorm.DB, hospitalID string) ([]string, error) {
+	var categories []string
+
+	// 使用 DISTINCT 查询去重的类别
+	if err := db.Model(&Department{}).
+		Where("hospital_id = ?", hospitalID).
+		Distinct().
+		Pluck("category", &categories).Error; err != nil {
+		return nil, fmt.Errorf("failed to retrieve categories: %v", err)
+	}
+
+	return categories, nil
+}
+
+// GetDepartmentByID 根据指定id查询科室信息
+func GetDepartmentByID(db *gorm.DB, id string) (*Department, error) {
+	var department Department
+	if err := db.Where("td_id = ?", id).First(&department).Error; err != nil {
+		return nil, err
+	}
+	return &department, nil
+}
+
 // UpdateDepartment 修改科室信息
 func UpdateDepartment(db *gorm.DB, department Department) error {
 	result := db.Save(&department)

@@ -5,6 +5,10 @@ import (
 	"gorm.io/gorm"
 )
 
+const (
+	activeStatus = "接诊中"
+)
+
 type Doctor struct {
 	ThID        string `gorm:"primaryKey;column:td_id"`
 	HospitalID  string `gorm:"column:hospital_id"`
@@ -60,4 +64,13 @@ func GetDoctor(db *gorm.DB, thID string) (Doctor, error) {
 		return Doctor{}, err
 	}
 	return doctor, nil
+}
+
+// GetDoctorsByDepartmentID 根据科室ID查询就诊中的所有医生信息
+func GetDoctorsByDepartmentID(db *gorm.DB, departmentID string) ([]Doctor, error) {
+	var doctors []Doctor
+	if err := db.Where("specialty = ? AND status = ?", departmentID, activeStatus).Find(&doctors).Error; err != nil {
+		return nil, err
+	}
+	return doctors, nil
 }

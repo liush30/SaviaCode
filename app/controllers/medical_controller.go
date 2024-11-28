@@ -1,14 +1,11 @@
-//go:build pkcs11
-// +build pkcs11
-
 package controllers
 
 import (
+	"eldercare_health/app/internal/crypto"
+	"eldercare_health/app/internal/db"
+	"eldercare_health/app/internal/pkg/tool"
 	"github.com/gin-gonic/gin"
 	"log"
-	"lyods-fabric-demo/app/internal/crypto"
-	"lyods-fabric-demo/app/internal/fabric"
-	"lyods-fabric-demo/app/internal/pkg/tool"
 	"net/http"
 )
 
@@ -22,6 +19,44 @@ type MedicalRecordRequest struct {
 	Data       string   `json:"data"`       // 加密数据
 	CryptoExp  string   `json:"cryptoExp"`  // 规则加密策略
 	Auth       []string `json:"auth"`       // 授权机构列表
+}
+
+const (
+	recordStatusPend   = "待就诊"
+	recordStatusDone   = "就诊结束"
+	recordStatusActive = "就诊中"
+)
+
+func RegistryMedicalRecord(c *gin.Context) {
+	//获取userId
+	userId := c.MustGet("userId").(string)
+	//获取doctor_id
+	doctorId := c.Query("doctor_id")
+	if doctorId == "" || userId == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "userId or doctor_id is required"})
+		return
+	}
+	dbClient, err := db.InitDB()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not connect to database:" + err.Error()})
+		return
+	}
+	record := db.MedicalRecord{
+		TmrID:     tool.GenerateUUIDWithoutDashes(),
+		PatientID: userId,
+		DoctorID:  doctorId,
+		Status:    recordStatusPend,
+		CreateAt:  tool.GetNowTime(),
+		UpdateAt:  tool.GetNowTime(),
+		Version:   1,
+	}
+	err = db.CreateMedicalRecord(dbClient, &record)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not create user:" + err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": "success"})
 }
 
 // CreateMedicalRecord 初始化就诊记录
