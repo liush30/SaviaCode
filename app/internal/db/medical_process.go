@@ -12,6 +12,9 @@ type MedicalProcess struct {
 	RecordValue string `gorm:"column:record_value"`      // 记录内容
 	Status      string `gorm:"column:status"`            // 记录状态
 	CreateAt    string `gorm:"column:create_at"`         // 创建时间
+	UpdateAt    string `gorm:"column:update_at"`         // 更新时间
+	Version     int    `gorm:"column:version"`           // 版本
+	PharmacyID  string `gorm:"column:pharmacy"`          // 药房ID
 }
 
 const (

@@ -18,6 +18,7 @@ type Doctor struct {
 	Status      string `gorm:"column:status"`
 	Level       string `gorm:"column:level"`
 	Description string `gorm:"column:desc"`
+	MaxNumber   int64  `gorm:"column:max_number"`
 	CreateAt    string `gorm:"column:create_at"`
 	UpdateAt    string `gorm:"column:update_at"`
 	Version     int    `gorm:"column:version"`
@@ -41,21 +42,24 @@ func CreateDoctor(db *gorm.DB, doctor *Doctor) error {
 
 	return nil
 }
+func UpdateDoctor(db *gorm.DB, id string, updatedFields interface{}) error {
+	return db.Model(&Doctor{}).Where("td_id = ?", id).Updates(updatedFields).Error
+}
 
 // UpdateDoctor UpdateDoctor
-func UpdateDoctor(db *gorm.DB, doctor *Doctor) error {
-	result := db.Save(doctor)
-
-	if result.Error != nil {
-		return fmt.Errorf("failed to update doctor: %v", result.Error)
-	}
-
-	if result.RowsAffected == 0 {
-		return fmt.Errorf("no rows affected, doctor update might have failed")
-	}
-
-	return nil
-}
+//func UpdateDoctor(db *gorm.DB, doctor *Doctor) error {
+//	result := db.Save(doctor)
+//
+//	if result.Error != nil {
+//		return fmt.Errorf("failed to update doctor: %v", result.Error)
+//	}
+//
+//	if result.RowsAffected == 0 {
+//		return fmt.Errorf("no rows affected, doctor update might have failed")
+//	}
+//
+//	return nil
+//}
 
 // GetDoctor 获取doctor信息
 func GetDoctor(db *gorm.DB, thID string) (Doctor, error) {
