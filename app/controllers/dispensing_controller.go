@@ -4,23 +4,25 @@
 package controllers
 
 import (
+	"eldercare_health/app/internal/fabric"
+	"eldercare_health/app/internal/pkg/tool"
 	"github.com/gin-gonic/gin"
-	"lyods-fabric-demo/app/internal/fabric"
-	"lyods-fabric-demo/app/internal/pkg/tool"
 	"net/http"
 )
 
 type CreateDispensingRequest struct {
 	//UserID                string `json:"userId"`                // 用户ID
-	PrescriptionID        string `json:"prescriptionId"`        // 处方ID
-	PharmacyID            string `json:"pharmacyId"`            // 药房ID
-	PatientID             string `json:"patientId"`             // 患者ID
-	ScheduledDispenseTime string `json:"scheduledDispenseTime"` // 预定取药时间
+	PrescriptionID string `json:"prescriptionId"` // 处方ID
+	PharmacyID     string `json:"pharmacyId"`     // 药房ID
+	//PatientID             string `json:"patientId"`             // 患者ID
+	ScheduledDispenseTime string `json:"scheduledTime"` // 预定取药时间
 }
 
 // CreateDispenseRecord 初始化取药单据
 func CreateDispenseRecord(c *gin.Context) {
 	var request CreateDispensingRequest
+	//获取user_id
+	userId := c.MustGet("userId").(string)
 	if err := c.ShouldBindJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request: " + err.Error()})
 		return
@@ -50,7 +52,7 @@ func CreateDispenseRecord(c *gin.Context) {
 		return
 	}
 	defer getaway.Close()
-	err = fabric.CreatePrescriptionDispensing(getaway, request.PrescriptionID, request.PharmacyID, request.PatientID, request.ScheduledDispenseTime)
+	err = fabric.CreatePrescriptionDispensing(getaway, request.PrescriptionID, request.PharmacyID, userId, request.ScheduledDispenseTime)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create prescription dispensing: " + err.Error()})
 		return
@@ -65,11 +67,7 @@ func QueryDispensing(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "id is required"})
 		return
 	}
-	userId := c.Query("userId")
-	if userId == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "userId is required"})
-		return
-	}
+	userId := c.MustGet("userId").(string)
 	cert, mspID, err := getCertAndMspID(userId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to get cert and msp id: " + err.Error()})
@@ -117,11 +115,7 @@ func ConfirmSignature(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "id is required"})
 		return
 	}
-	userId := c.Query("userId")
-	if userId == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "userId is required"})
-		return
-	}
+	userId := c.MustGet("userId").(string)
 	signType := c.Query("signType")
 	if signType == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "signType is required"})

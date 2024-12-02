@@ -1,3 +1,6 @@
+//go:build pkcs11
+// +build pkcs11
+
 package controllers
 
 import (
@@ -30,6 +33,7 @@ func GetAllHospitals(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"data": facility})
 }
+
 func GetAllDepartmentsCategory(c *gin.Context) {
 	initDB, err := db.InitDB()
 	if err != nil {

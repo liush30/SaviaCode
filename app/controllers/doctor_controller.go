@@ -1,3 +1,6 @@
+//go:build pkcs11
+// +build pkcs11
+
 package controllers
 
 import (
@@ -182,17 +185,35 @@ func GetProcessByVisitID(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "visitId is required"})
 		return
 	}
+	//获取page和size
+	page := c.Query("page")
+	size := c.Query("size")
+	if size == "" || page == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "failed to get page and size"})
+		return
+	}
+	//将page和size转成int
+	pageInt, err := strconv.Atoi(page)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "failed to convert page to int"})
+		return
+	}
+	sizeInt, err := strconv.Atoi(size)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "failed to convert size to int"})
+		return
+	}
 	dbClient, err := db.InitDB()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not connect to database:" + err.Error()})
 		return
 	}
-	process, err := db.GetMedicalProcess(dbClient, visitID)
+	process, err := db.GetMedicalProcess(dbClient, visitID, pageInt, sizeInt)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not get records:" + err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"data": process})
+	c.JSON(http.StatusOK, gin.H{"data": process, "total": len(process)})
 }
 
 func GetProcess(c *gin.Context) {

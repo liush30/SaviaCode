@@ -27,9 +27,9 @@ const (
 )
 
 // CreateMedicalRecord 创建就诊记录
-func CreateMedicalRecord(getaway *client.Gateway, personID, recordID, recordType, doctorID, data string) error {
+func CreateMedicalRecord(getaway *client.Gateway, personID, recordID, recordType, doctorID, doctorSign, data string) error {
 	contract := getContract(getaway, channelName, medicalChaincodeName)
-	_, err := contract.SubmitTransaction("CreateMedicalRecord", personID, recordID, recordType, doctorID, data)
+	_, err := contract.SubmitTransaction("CreateMedicalRecord", personID, recordID, recordType, doctorID, doctorSign, data)
 	if err != nil {
 		return fmt.Errorf("failed to submit transaction: %v", err)
 	}
@@ -37,9 +37,9 @@ func CreateMedicalRecord(getaway *client.Gateway, personID, recordID, recordType
 }
 
 // UpdateMedicalRecord 更新就诊记录
-func UpdateMedicalRecord(getaway *client.Gateway, personID, recordID, recordType, doctorID, data string) error {
+func UpdateMedicalRecord(getaway *client.Gateway, personID, recordID, recordType, doctorID, doctorSign, data string) error {
 	contract := getContract(getaway, channelName, medicalChaincodeName)
-	_, err := contract.SubmitTransaction("UpdateMedicalRecord", personID, recordID, recordType, doctorID, data)
+	_, err := contract.SubmitTransaction("UpdateMedicalRecord", personID, recordID, recordType, doctorID, doctorSign, data)
 	if err != nil {
 		return fmt.Errorf("failed to submit transaction: %v", err)
 	}

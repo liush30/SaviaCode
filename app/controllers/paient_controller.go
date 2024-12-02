@@ -1,3 +1,6 @@
+//go:build pkcs11
+// +build pkcs11
+
 package controllers
 
 import (
@@ -105,8 +108,13 @@ func GetPatientMedicalInfoByStatus(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not connect to database:" + err.Error()})
 		return
 	}
+	conditions := make(map[string]interface{})
+	conditions["patient_id"] = userId
+	if status != "" {
+		conditions["status"] = status
+	}
 	//获取就诊记录
-	info, err := db.QueryMedicalRecordByPatientID(dbClient, userId, status, pageInt, sizeInt)
+	info, err := db.QueryMedicalRecordByConditions(dbClient, conditions, pageInt, sizeInt)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not get records:" + err.Error()})
 		return

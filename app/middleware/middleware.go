@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"community-governance/application/utils"
+	"eldercare_health/app/internal/pkg/tool"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strings"
@@ -27,7 +27,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		}
 
 		// 解析并验证 token
-		claims, err := utils.ParseJWT(tokenString)
+		claims, err := tool.ParseJWT(tokenString)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "不合法的token"})
 			c.Abort()

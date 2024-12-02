@@ -10,15 +10,14 @@ import (
 
 func main() {
 	r := gin.Default()
-
-	// 注册个人档案路由
-	routes.RegisterPersonalRecordRoutes(r)
-
-	// 注册取药单据路由
-	routes.RegisterDispensingRoutes(r)
-
-	// 注册就诊记录路由
-	routes.RegisterMedicalRoutes(r)
+	corsConfig := cors.DefaultConfig()
+	corsConfig.AllowOrigins = []string{"*"}
+	corsConfig.AllowHeaders = []string{"Authorization", "Content-Type"}
+	r.Use(cors.New(corsConfig))
+	routes.RegisterPharmacy(r)
+	routes.RegisterDoctorRoutes(r)
+	routes.RegisterPatientRoutes(r)
+	routes.RegisterUserRoutes(r)
 
 	// 启动服务
 	r.Run()

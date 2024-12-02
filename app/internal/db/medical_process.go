@@ -11,6 +11,7 @@ type MedicalProcess struct {
 	RecordType  string `gorm:"column:record_type"`       // 就诊类型
 	RecordValue string `gorm:"column:record_value"`      // 记录内容
 	Status      string `gorm:"column:status"`            // 记录状态
+	Sign        string `gorm:"column:sign"`              // 签名
 	CreateAt    string `gorm:"column:create_at"`         // 创建时间
 	UpdateAt    string `gorm:"column:update_at"`         // 更新时间
 	Version     int    `gorm:"column:version"`           // 版本
@@ -37,9 +38,9 @@ func CreateMedicalProcess(db *gorm.DB, record *MedicalProcess) error {
 }
 
 // GetMedicalProcess 查看指定就诊记录的id
-func GetMedicalProcess(db *gorm.DB, visitID string) ([]MedicalProcess, error) {
+func GetMedicalProcess(db *gorm.DB, visitID string, page, size int) ([]MedicalProcess, error) {
 	var records []MedicalProcess
-	result := db.Where("tmr_id = ?", visitID).Find(&records)
+	result := db.Limit(size).Offset((page-1)*size).Where("tmr_id = ?", visitID).Find(&records)
 	if result.Error != nil {
 		return nil, fmt.Errorf("failed to get records: %v", result.Error)
 	}

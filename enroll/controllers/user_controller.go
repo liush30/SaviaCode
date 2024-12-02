@@ -100,3 +100,41 @@ func EnrollUserAttributes(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, gin.H{"message": "User attribute created successfully"})
 }
+
+func DeleteUserAttributes(c *gin.Context) {
+	//获取url中的key
+	key := c.Query("key")
+	dbClient, err := db.InitDB()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not delete user attribute"})
+		return
+	}
+	if err := db.DeleteUserAttribute(dbClient, key); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not delete user attribute"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "User attribute deleted successfully"})
+
+}
+
+func GetUserAttributes(c *gin.Context) {
+	dbClient, err := db.InitDB()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not get user attribute"})
+		return
+	}
+	var conditions = make(map[string]interface{})
+	err = c.ShouldBindJSON(&conditions)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request: " + err.Error()})
+		return
+	}
+
+	data, err := db.GetUserAttributeByCondition(dbClient, conditions)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not get user attribute"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": data})
+
+}

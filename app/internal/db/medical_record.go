@@ -75,14 +75,14 @@ func QueryMedicalRecordByDoctorID(db *gorm.DB, doctorID, status string, page, si
 }
 
 // QueryMedicalRecordByPatientID 查看指定患者的指定状态的所有就诊记录
-func QueryMedicalRecordByPatientID(db *gorm.DB, patientID, status string, page, size int) ([]MedicalRecord, error) {
-	var records []MedicalRecord
-	result := db.Where("patient_id = ? AND status = ?", patientID, status).Offset((page - 1) * size).Limit(size).Find(&records)
-	if result.Error != nil {
-		return nil, fmt.Errorf("failed to query records: %v", result.Error)
-	}
-	return records, nil
-}
+//func QueryMedicalRecordByPatientID(db *gorm.DB, patientID, status string, page, size int) ([]MedicalRecord, error) {
+//	var records []MedicalRecord
+//	result := db.Where("patient_id = ? AND status = ?", patientID, status).Offset((page - 1) * size).Limit(size).Find(&records)
+//	if result.Error != nil {
+//		return nil, fmt.Errorf("failed to query records: %v", result.Error)
+//	}
+//	return records, nil
+//}
 
 func UpdateMedicalRecordStatus(db *gorm.DB, id, status string) error {
 	result := db.Model(&MedicalRecord{}).Where("tmr_id = ?", id).Update("status", status)

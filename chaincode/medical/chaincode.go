@@ -23,7 +23,7 @@ type MedicalRecord struct {
 }
 
 // CreateMedicalRecord 创建就诊记录
-func (m *MedicalRecordContract) CreateMedicalRecord(ctx contractapi.TransactionContextInterface, personID, recordID, recordType, doctorID, data string) error {
+func (m *MedicalRecordContract) CreateMedicalRecord(ctx contractapi.TransactionContextInterface, personID, recordID, recordType, doctorID, doctorSign, data string) error {
 	err := checkInput(personID, recordID, recordType, doctorID, data)
 	if err != nil {
 		return err
@@ -52,11 +52,11 @@ func (m *MedicalRecordContract) CreateMedicalRecord(ctx contractapi.TransactionC
 	// 将时间戳转换为更易读的格式
 	txTime := timestamp.Seconds
 	record := MedicalRecord{
-		DoctorID:  doctorID,
-		Data:      data,
-		Timestamp: txTime,
-		RecordID:  recordID,
-		//DoctorSign: doctorSign,
+		DoctorID:   doctorID,
+		Data:       data,
+		Timestamp:  txTime,
+		RecordID:   recordID,
+		DoctorSign: doctorSign,
 		RecordType: recordType,
 		Owner:      owner,
 	}
@@ -72,7 +72,7 @@ func (m *MedicalRecordContract) CreateMedicalRecord(ctx contractapi.TransactionC
 	return nil
 }
 
-func (m *MedicalRecordContract) UpdateMedicalRecord(ctx contractapi.TransactionContextInterface, personID, recordID, recordType, doctorID, data string) error {
+func (m *MedicalRecordContract) UpdateMedicalRecord(ctx contractapi.TransactionContextInterface, personID, recordID, recordType, doctorID, doctorSign, data string) error {
 	err := checkInput(personID, recordID, recordType, doctorID, data)
 	if err != nil {
 		return err
@@ -110,7 +110,7 @@ func (m *MedicalRecordContract) UpdateMedicalRecord(ctx contractapi.TransactionC
 	// 将时间戳转换为更易读的格式
 	record.Data = data
 	record.Timestamp = timestamp.Seconds
-	//record.DoctorSign = doctorSign
+	record.DoctorSign = doctorSign
 	recordJSON, err := json.Marshal(record)
 	if err != nil {
 		return fmt.Errorf("failed to marshal record: %v", err)

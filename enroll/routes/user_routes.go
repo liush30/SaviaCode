@@ -11,14 +11,20 @@ func RegisterUserRoutes(r *gin.Engine) {
 		//enroll 路由组
 		enrollGroup := userGroup.Group("/enroll")
 		{
-			enrollGroup.POST("/attributes", controllers.EnrollUserAttributes) // 注册用户属性
-			enrollGroup.POST("/identity", controllers.EnrollUser)             // 注册用户身份注册
+
+			enrollGroup.POST("/identity", controllers.EnrollUser) // 注册用户身份注册
 		}
 		registerGroup := userGroup.Group("/register")
 		{
 			registerGroup.POST("/request", controllers.RegisterRequest) //发起注册请求
 			registerGroup.POST("/get", controllers.GetAllUsersRegisterRequest)
 			registerGroup.POST("/approve", controllers.ApproveRegistration)
+		}
+		attrGroup := userGroup.Group("/attributes")
+		{
+			attrGroup.POST("/register", controllers.EnrollUserAttributes) // 注册用户属性
+			attrGroup.GET("/delete", controllers.DeleteUserAttributes)    // 删除用户属性
+			attrGroup.POST("/get", controllers.GetUserAttributes)         // 查询用户属性
 		}
 	}
 }
