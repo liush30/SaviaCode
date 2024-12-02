@@ -35,9 +35,9 @@ const (
 	// org2 server name
 	org2ServerName = "peer0.org2.example.com"
 	//softhsm key label
-	label = "fabric-hsm"
+	label = "ForFabric"
 	//softhsm pin
-	pin = "987654"
+	pin = "98765432"
 )
 const (
 	channelName             = "mychannel"
