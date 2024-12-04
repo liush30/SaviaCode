@@ -144,7 +144,7 @@ func Registry(c *gin.Context) {
 	}
 	err = db.CreateMedicalRecord(dbClient, &record)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not create user:" + err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"data": "success"})

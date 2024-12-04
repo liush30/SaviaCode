@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 )
 
 // UserAttributeRequest 用户属性注册请求参数
@@ -118,6 +119,24 @@ func DeleteUserAttributes(c *gin.Context) {
 }
 
 func GetUserAttributes(c *gin.Context) {
+	//获取page和size
+	page := c.Query("page")
+	size := c.Query("size")
+	if size == "" || page == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "failed to get page and size"})
+		return
+	}
+	//将page和size转成int
+	pageInt, err := strconv.Atoi(page)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "failed to convert page to int"})
+		return
+	}
+	sizeInt, err := strconv.Atoi(size)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "failed to convert size to int"})
+		return
+	}
 	dbClient, err := db.InitDB()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not get user attribute"})
@@ -130,11 +149,11 @@ func GetUserAttributes(c *gin.Context) {
 		return
 	}
 
-	data, err := db.GetUserAttributeByCondition(dbClient, conditions)
+	data, err := db.GetUserAttributeByCondition(dbClient, conditions, pageInt, sizeInt)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not get user attribute"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"data": data})
+	c.JSON(http.StatusOK, gin.H{"data": data, "total": len(data)})
 
 }

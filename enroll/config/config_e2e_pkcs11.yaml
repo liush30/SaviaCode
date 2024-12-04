@@ -61,7 +61,7 @@ organizations:
     mspid: Org1MSP
 
     # This org's MSP store (absolute path or relative to client.cryptoconfig)
-    cryptoPath: /home/savia/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp
+    cryptoPath: /root/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp
 
 #    peers:
 #      - peer0.org1.example.com
@@ -102,7 +102,7 @@ certificateAuthorities:
     url: https://localhost:7054
     tlsCACerts:
       # Comma-Separated list of paths
-      path: /home/savia/fabric-samples/test-network/organizations/fabric-ca/org1/ca-cert.pem
+      path: /root/fabric-samples/test-network/organizations/fabric-ca/org1/ca-cert.pem
       # Client key and cert for SSL handshake with Fabric CA
 #      client:
 #        key:

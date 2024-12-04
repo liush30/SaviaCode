@@ -21,7 +21,7 @@ func RegisterPatientRoutes(r *gin.Engine) {
 			infoGroup.GET("/department", controllers.GetAllDepartments)                  //获取医院所有科室
 			infoGroup.GET("/pharmacy", controllers.GetAllPharmacy)                       //获取所有药房信息
 		}
-		patientGroup.GET("/register", controllers.Registry) //查询个人档案
+		patientGroup.GET("/register", controllers.Registry)
 		medicalGroup := patientGroup.Group("/medical")
 		{
 			medicalGroup.GET("/end", controllers.EndMedicalInfo)                 //结束就诊
@@ -35,7 +35,7 @@ func RegisterPatientRoutes(r *gin.Engine) {
 		}
 		dispensingGroup := patientGroup.Group("/dispensing")
 		{
-			dispensingGroup.GET("/create", controllers.CreateDispenseRecord)
+			dispensingGroup.POST("/create", controllers.CreateDispenseRecord)
 			dispensingGroup.GET("/confirm", controllers.ConfirmSignature) //确认签名
 			dispensingGroup.GET("/query", controllers.QueryDispensing)    //查询取药单据
 		}

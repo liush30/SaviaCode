@@ -5,6 +5,7 @@ package controllers
 
 import (
 	"eldercare_health/app/internal/db"
+	"eldercare_health/app/internal/pkg/tool"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -134,8 +135,12 @@ func EndMedicalInfo(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not connect to database:" + err.Error()})
 		return
 	}
-	//获取
-	err = db.UpdateMedicalRecordStatus(dbClient, recordID, recordStatusDone)
+	conditions := make(map[string]interface{})
+	conditions["status"] = recordStatusDone
+	conditions["end_date"] = tool.GetNowTime()
+
+	//更新
+	err = db.UpdateMedicalRecord(dbClient, recordID, conditions)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not get records:" + err.Error()})
 		return

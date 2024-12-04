@@ -14,8 +14,8 @@ type MedicalProcess struct {
 	Sign        string `gorm:"column:sign"`              // 签名
 	CreateAt    string `gorm:"column:create_at"`         // 创建时间
 	UpdateAt    string `gorm:"column:update_at"`         // 更新时间
-	Version     int    `gorm:"column:version"`           // 版本
-	PharmacyID  string `gorm:"column:pharmacy"`          // 药房ID
+	//Version     int    `gorm:"column:version"`           // 版本
+	//PharmacyID string `gorm:"column:pharmacy"` // 药房ID
 }
 
 const (
@@ -69,7 +69,7 @@ func GetMedicalProcessByID(db *gorm.DB, id string) (*MedicalProcess, error) {
 	return &record, nil
 }
 
-// DeleteMedicalProcess 删除就诊记录
+// DeleteMedicalProcess 删除就诊过程记录
 func DeleteMedicalProcess(db *gorm.DB, processId string) error {
 	info, err := GetMedicalProcessByID(db, processId)
 	if err != nil {
@@ -78,7 +78,7 @@ func DeleteMedicalProcess(db *gorm.DB, processId string) error {
 	if (*info).Status == ProcessStatusFinished {
 		return fmt.Errorf("record has been finished")
 	}
-	result := db.Where("tmr_id = ?", processId).Delete(&MedicalProcess{})
+	result := db.Delete(&MedicalProcess{}, "tmp_id = ?", processId)
 	if result.Error != nil {
 		return fmt.Errorf("failed to delete records: %v", result.Error)
 	}

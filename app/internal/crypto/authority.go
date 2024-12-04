@@ -1,10 +1,10 @@
 package crypto
 
 import (
+	"eldercare_health/app/internal/db"
 	"fmt"
 	"github.com/fentec-project/gofe/abe"
 	"log"
-	"lyods-fabric-demo/app/internal/db"
 	"strings"
 )
 
@@ -17,6 +17,7 @@ func init() {
 		log.Fatal(err)
 	}
 	attributes, err := db.GetAuthoritiesNameAndAttributes(dbClient)
+	log.Println(attributes)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -27,6 +28,7 @@ func init() {
 func initAuthority(authorities []db.AuthorityAttributes) {
 	maabe := abe.NewMAABE()
 	for _, auth := range authorities {
+		log.Printf("authority: %s, attributes: %s\n", auth.AuthorityName, auth.Attributes)
 		authAttributes := strings.Split(auth.Attributes, ",")
 		authority, err := createAuthority(maabe, auth.AuthorityName, authAttributes)
 		if err != nil {

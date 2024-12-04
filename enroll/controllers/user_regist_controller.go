@@ -31,6 +31,7 @@ func RegisterRequest(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not create user:" + err.Error()})
 		return
 	}
+	c.JSON(http.StatusOK, gin.H{"data": "success"})
 }
 func GetAllUsersRegisterRequest(c *gin.Context) {
 	//获取page和size
@@ -52,8 +53,8 @@ func GetAllUsersRegisterRequest(c *gin.Context) {
 		return
 	}
 	//获取请求数据
-	reqParams := map[string]interface{}{}
-	err = c.ShouldBindJSON(reqParams)
+	reqParams := make(map[string]interface{})
+	err = c.ShouldBindJSON(&reqParams)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request: " + err.Error()})
 		return
@@ -101,10 +102,10 @@ func ApproveRegistration(c *gin.Context) {
 	}
 	updateResult := make(map[string]interface{})
 	updateResult["result"] = result
-	updateResult["updateAt"] = tool.GetNowTime()
+	updateResult["update_at"] = tool.GetNowTime()
 	updateResult["version"] = registration.Version + 1
 	//更新数据
-	err = db.UpdateRegistration(dbClient, turID, result)
+	err = db.UpdateRegistration(dbClient, turID, updateResult)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not update registration:" + err.Error()})
 		return
@@ -120,6 +121,8 @@ func ApproveRegistration(c *gin.Context) {
 		user := db.User{
 			Username:     registration.Name,
 			PasswordHash: registration.Password,
+			IDNumber:     registration.IDNumber,
+			Type:         "病患",
 			CreatedAt:    tool.GetNowTime(),
 			UpdatedAt:    tool.GetNowTime(),
 			Version:      InitVersion,

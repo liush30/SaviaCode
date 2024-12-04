@@ -11,6 +11,7 @@ type MedicalRecord struct {
 	//DepartmentID string `gorm:"column:department_id"`
 	DoctorID  string `gorm:"column:doctor_id"`
 	VisitDate string `gorm:"column:visit_date"`
+	EndDate   string `gorm:"column:end_date"` // 结束日期
 	Status    string `gorm:"column:status"`
 	CreateAt  string `gorm:"column:create_at"`
 	UpdateAt  string `gorm:"column:update_at"`
@@ -83,6 +84,15 @@ func QueryMedicalRecordByDoctorID(db *gorm.DB, doctorID, status string, page, si
 //	}
 //	return records, nil
 //}
+
+// UpdateMedicalRecord 更新指定内容的就诊记录
+func UpdateMedicalRecord(db *gorm.DB, id string, conditions map[string]interface{}) error {
+	result := db.Model(&MedicalRecord{}).Where("tmr_id = ?", id).Updates(conditions)
+	if result.Error != nil {
+		return fmt.Errorf("failed to update record: %v", result.Error)
+	}
+	return nil
+}
 
 func UpdateMedicalRecordStatus(db *gorm.DB, id, status string) error {
 	result := db.Model(&MedicalRecord{}).Where("tmr_id = ?", id).Update("status", status)

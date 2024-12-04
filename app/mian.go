@@ -4,8 +4,9 @@
 package main
 
 import (
+	"eldercare_health/app/routes"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"lyods-fabric-demo/app/routes"
 )
 
 func main() {
@@ -20,5 +21,7 @@ func main() {
 	routes.RegisterUserRoutes(r)
 
 	// 启动服务
-	r.Run()
+	if err := r.Run(":8089"); err != nil {
+		panic(err)
+	}
 }

@@ -1,7 +1,7 @@
 package db
 
 import (
-	"lyods-fabric-demo/enroll/internal/pkg/tool"
+	"eldercare_health/enroll/internal/pkg/tool"
 	"testing"
 )
 

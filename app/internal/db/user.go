@@ -50,7 +50,7 @@ func Login(db *gorm.DB, idNumber, password string) (string, string, error) {
 	var user User
 
 	// 根据身份证号码查找用户
-	err := db.Where("id_number = ? AND password = ?", idNumber, tool.CalculateSHA256Hash(password)).First(&user).Error
+	err := db.Where("id_number = ? AND password_hash = ?", idNumber, tool.CalculateSHA256Hash(password)).First(&user).Error
 	if err != nil {
 		return "", "", errors.New("invalid id number or password")
 	}

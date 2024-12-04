@@ -18,7 +18,7 @@ func RegisterUserRoutes(r *gin.Engine) {
 		{
 			registerGroup.POST("/request", controllers.RegisterRequest) //发起注册请求
 			registerGroup.POST("/get", controllers.GetAllUsersRegisterRequest)
-			registerGroup.POST("/approve", controllers.ApproveRegistration)
+			registerGroup.GET("/approve", controllers.ApproveRegistration)
 		}
 		attrGroup := userGroup.Group("/attributes")
 		{

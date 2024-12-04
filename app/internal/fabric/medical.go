@@ -20,10 +20,10 @@ type MedicalRecord struct {
 }
 
 const (
-	RecordTypePrescription = "prescription" // 处方
-	RecordTypeDiagnosis    = "diagnosis"    // 诊断
-	RecordTypeTreatment    = "treatment"    // 诊疗
-	RecordTypeProcedure    = "procedure"    // 治疗方案
+	RecordTypePrescription = "处方"        // 处方
+	RecordTypeDiagnosis    = "diagnosis" // 诊断
+	RecordTypeTreatment    = "treatment" // 诊疗
+	RecordTypeProcedure    = "procedure" // 治疗方案
 )
 
 // CreateMedicalRecord 创建就诊记录
@@ -51,7 +51,10 @@ func QueryMedicalRecord(getaway *client.Gateway, personID string) (map[string][]
 	contract := getContract(getaway, channelName, medicalChaincodeName)
 	evaluateResult, err := contract.EvaluateTransaction("QueryMedicalRecord", personID)
 	if err != nil {
-		panic(fmt.Errorf("failed to evaluate transaction: %w", err))
+		return nil, fmt.Errorf("failed to evaluate transaction: %v", err)
+	}
+	if evaluateResult == nil {
+		return nil, nil
 	}
 	var records []MedicalRecord
 	if err := json.Unmarshal(evaluateResult, &records); err != nil {
@@ -72,6 +75,9 @@ func QueryPrescription(getaway *client.Gateway, personID, recordID, recordType s
 	evaluateResult, err := contract.EvaluateTransaction("QueryPrescription", personID, recordID, recordType)
 	if err != nil {
 		return MedicalRecord{}, err
+	}
+	if evaluateResult == nil {
+		return MedicalRecord{}, nil
 	}
 	var record MedicalRecord
 	if err := json.Unmarshal(evaluateResult, &record); err != nil {

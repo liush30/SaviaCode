@@ -6,6 +6,8 @@ type User struct {
 	UserID         string `gorm:"column:USER_ID;primaryKey" json:"userId"`
 	Username       string `gorm:"column:USERNAME" json:"username"`
 	PasswordHash   string `gorm:"column:PASSWORD_HASH" json:"passwordHash"`
+	IDNumber       string `gorm:"column:ID_NUMBER" json:"idNumber"`
+	Type           string `gorm:"column:TYPE" json:"type"`
 	MspID          string `gorm:"column:MSP_ID" json:"mspId"`
 	EnrollmentCert []byte `gorm:"column:ENROLLMENT_CERT" json:"enrollmentCert"`
 	CreatedAt      string `gorm:"column:CREATED_AT" json:"createdAt"`

@@ -36,11 +36,7 @@ func UpdateDoctorStatus(c *gin.Context) {
 
 func GetDoctorRegisterInfoByStatus(c *gin.Context) {
 	//获取user_id
-	userID := c.Query("userId")
-	if userID == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "userId is required"})
-		return
-	}
+	userID := c.MustGet("userId").(string)
 	//获取状态
 	status := c.Query("status")
 	if status == "" {
@@ -133,8 +129,12 @@ func AcceptRegisterInfo(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not connect to database:" + err.Error()})
 		return
 	}
+	conditions := make(map[string]interface{})
+	conditions["status"] = recordStatusActive
+	conditions["visit_date"] = tool.GetNowTime()
+
 	//获取
-	err = db.UpdateMedicalRecordStatus(dbClient, recordID, recordStatusActive)
+	err = db.UpdateMedicalRecord(dbClient, recordID, conditions)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not get records:" + err.Error()})
 		return
@@ -168,7 +168,7 @@ func AddProcess(c *gin.Context) {
 		CreateAt:    nowDate,
 		UpdateAt:    nowDate,
 		Status:      recordStatusPend,
-		Version:     1,
+		//Version:     1,
 	}
 	err = db.CreateMedicalProcess(dbClient, &process)
 	if err != nil {

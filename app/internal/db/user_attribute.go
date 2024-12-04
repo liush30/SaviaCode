@@ -23,9 +23,9 @@ func GetUserAttributesByUserID(db *gorm.DB, userID string) ([]AuthorityAttribute
 	var results []AuthorityAttributes
 
 	// 执行查询
-	if err := db.Table("T_USER_ATTRIBUTES U").
+	if err := db.Table("t_user_attributes U").
 		Select("A.AUTH_NAME, GROUP_CONCAT(U.ATTRIBUTE) AS ATTRIBUTE").
-		Joins("JOIN T_AUTHORITY A ON A.TA_KEY = U.TA_KEY").
+		Joins("JOIN t_authority A ON A.TA_KEY = U.TA_KEY").
 		Where("U.USER_ID = ?", userID).
 		Group("A.AUTH_NAME").
 		Scan(&results).Error; err != nil {

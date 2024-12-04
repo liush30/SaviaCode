@@ -38,12 +38,13 @@ func GetUserAttribute(db *gorm.DB, key string) (*UserAttribute, error) {
 }
 
 // GetUserAttributeByCondition 根据条件查询用户属性
-func GetUserAttributeByCondition(db *gorm.DB, condition map[string]interface{}) (*UserAttribute, error) {
-	var data UserAttribute
-	if err := db.Where(condition).First(&data).Error; err != nil {
+func GetUserAttributeByCondition(db *gorm.DB, condition map[string]interface{}, page, size int) ([]UserAttribute, error) {
+	var data []UserAttribute
+	if err := db.Where(condition).Offset((page - 1) * size).Limit(size).Find(&data).Error; err != nil {
 		return nil, err
 	}
-	return &data, nil
+	return data, nil
+
 }
 
 // BatchInsertUserAttributes 批量插入用户属性

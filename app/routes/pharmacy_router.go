@@ -5,6 +5,7 @@ package routes
 
 import (
 	"eldercare_health/app/controllers"
+	"eldercare_health/app/middleware"
 	"github.com/gin-gonic/gin"
 )
 

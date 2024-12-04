@@ -8,7 +8,7 @@ import (
 // Dispensing  定义 t_dispensing 结构体
 type Dispensing struct {
 	TdID           string `gorm:"primary_key;type:varchar(64);not null" json:"td_id"` // 记录ID
-	PrescriptionID string `gorm:"type:varchar(10);not null" json:"prescription_id"`   // 处方ID
+	PrescriptionID string `gorm:"type:varchar(10);not null"  json:"prescription_id"`  // 处方ID
 	PharmacyID     string `gorm:"type:varchar(64);not null" json:"pharmacy_id"`       // 药房ID
 	Time           string `gorm:"type:varchar(64)" json:"time"`                       // 预约时间
 	Status         string `gorm:"type:varchar(10);not null" json:"status"`            // 状态
@@ -30,6 +30,15 @@ func CreateDispensing(db *gorm.DB, dispensing *Dispensing) error {
 	}
 	if result.RowsAffected == 0 {
 		return fmt.Errorf("no rows affected, record creation might have failed")
+	}
+	return nil
+}
+
+// 修改状态
+func UpdateDispensing(db *gorm.DB, id, status string) error {
+	result := db.Model(&Dispensing{}).Where("td_id = ?", id).Update("status", status)
+	if result.Error != nil {
+		return fmt.Errorf("failed to update record: %v", result.Error)
 	}
 	return nil
 }

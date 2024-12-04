@@ -63,7 +63,7 @@ type DepartmentNameAndID struct {
 // GetDepartNameAndIdByHospitalID 根据医院id查询科室信息
 func GetDepartNameAndIdByHospitalID(db *gorm.DB, hospitalID, category string) ([]DepartmentNameAndID, error) {
 	var departments []DepartmentNameAndID
-	if err := db.Where("hospital_id = ? AND category = ?", hospitalID, category).Find(&departments).Error; err != nil {
+	if err := db.Model(&Department{}).Where("hospital_id = ? AND category = ?", hospitalID, category).Find(&departments).Error; err != nil {
 		return nil, err
 	}
 	return departments, nil

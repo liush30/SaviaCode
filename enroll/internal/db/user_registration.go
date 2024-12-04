@@ -6,23 +6,21 @@ import (
 )
 
 type UserRegistration struct {
-	TurID          string `gorm:"primaryKey;column:tur_id"`
-	Name           string `gorm:"column:name"`
-	IDNumber       string `gorm:"column:id_number"`
-	Gender         string `gorm:"column:gender"`
-	DateOfBirth    string `gorm:"column:date_of_birth"`
-	BloodType      string `gorm:"column:blood_type"`
-	HeightCm       string `gorm:"column:height_cm"`
-	WeightKg       string `gorm:"column:weight_kg"`
-	Address        string `gorm:"column:address"`
-	PhoneNumber    string `gorm:"column:phone_number"`
-	AllergyHistory string `gorm:"column:allergy_history"`
-	MedicalHistory string `gorm:"column:medical_history"`
-	CreateAt       string `gorm:"column:create_at"`
-	UpdateAt       string `gorm:"column:update_at"`
-	Result         string `gorm:"column:result"`
-	Version        int    `gorm:"column:version"`
-	Password       string `gorm:"column:password"`
+	TurID          string `gorm:"primaryKey;column:tur_id" json:"tur_id"`
+	Name           string `gorm:"column:name" json:"name"`
+	IDNumber       string `gorm:"column:id_number" json:"id_number"`
+	Gender         string `gorm:"column:gender" json:"gender"`
+	DateOfBirth    string `gorm:"column:date_of_birth" json:"date_of_birth"`
+	BloodType      string `gorm:"column:blood_type" json:"blood_type"`
+	Address        string `gorm:"column:address" json:"address"`
+	PhoneNumber    string `gorm:"column:phone_number" json:"phone_number"`
+	AllergyHistory string `gorm:"column:allergy_history" json:"allergy_history"`
+	MedicalHistory string `gorm:"column:medical_history" json:"medical_history"`
+	CreateAt       string `gorm:"column:create_at" json:"create_at"`
+	UpdateAt       string `gorm:"column:update_at" json:"update_at"`
+	Result         string `gorm:"column:result" json:"result"`
+	Version        int    `gorm:"column:version" json:"version"`
+	Password       string `gorm:"column:password" json:"password"`
 }
 
 func (UserRegistration) TableName() string {

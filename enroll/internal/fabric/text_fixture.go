@@ -113,7 +113,7 @@ const (
 
 func userStoreFromConfig() msp.UserStore {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-		"root", "lyods@123", "192.168.1.212", 3306, "sit_nf_ms")
+		"lsh", "lsh666hh", "zhoupb.com", 33060, "eldercare_health")
 	userStore, err := NewMySQLUserStore(dsn)
 	if err != nil {
 		panic(fmt.Sprintf("creating a user store failed: %s", err))

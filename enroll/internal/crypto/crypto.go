@@ -2,13 +2,13 @@ package crypto
 
 import (
 	"crypto/sha256"
+	db2 "eldercare_health/enroll/internal/db"
+	"eldercare_health/enroll/internal/pkg/tool"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"github.com/fentec-project/bn256"
 	"github.com/fentec-project/gofe/abe"
-	db2 "lyods-fabric-demo/enroll/internal/db"
-	"lyods-fabric-demo/enroll/internal/pkg/tool"
 )
 
 type OnChainData struct {

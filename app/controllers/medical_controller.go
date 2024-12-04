@@ -6,7 +6,9 @@ package controllers
 import (
 	"eldercare_health/app/internal/crypto"
 	"eldercare_health/app/internal/db"
+	"eldercare_health/app/internal/fabric"
 	"eldercare_health/app/internal/pkg/tool"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
@@ -41,6 +43,7 @@ func CreateMedicalRecord(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request: " + err.Error()})
 		return
 	}
+	log.Println("request:", request)
 	//获取user_id
 	userID := c.MustGet("userId").(string)
 	if userID == "" {
@@ -73,8 +76,10 @@ func CreateMedicalRecord(c *gin.Context) {
 		}
 		request.CryptoExp = expInfo.Exp
 		request.Auth = strings.Split(expInfo.Auth, ",")
+		log.Println("cryptoExp:", request.CryptoExp)
+		log.Println("auth:", request.Auth)
 	}
-	cert, mspID, err := getCertAndMspID(request.UserID)
+	cert, mspID, err := getCertAndMspID(userID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to get cert and msp id: " + err.Error()})
 		return
@@ -287,7 +292,8 @@ func QueryPrescription(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to query prescription: " + err.Error()})
 		return
 	}
-	//fmt.Println(record.Data)
+	fmt.Println("patientId: ", medicalRecord.PatientID, " recordId: ", recordId, " recordType: ", fabric.RecordTypePrescription)
+	fmt.Println("data: ", record)
 	//解密数据
 	dataBytes, err := tool.DecodeToString(record.Data)
 	if err != nil {

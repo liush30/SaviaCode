@@ -4,11 +4,25 @@
 package controllers
 
 import (
+	"eldercare_health/app/internal/db"
 	"eldercare_health/app/internal/fabric"
 	"eldercare_health/app/internal/pkg/tool"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
+
+func getCertAndMspID(userID string) ([]byte, string, error) {
+	//连接数据库
+	dbClient, err := db.InitDB()
+	if err != nil {
+		return nil, "", err
+	}
+	cert, mspID, err := db.GetUserCertAndMspID(dbClient, userID)
+	if err != nil {
+		return nil, "", err
+	}
+	return cert, mspID, nil
+}
 
 type CreateDispensingRequest struct {
 	//UserID                string `json:"userId"`                // 用户ID
@@ -27,7 +41,24 @@ func CreateDispenseRecord(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request: " + err.Error()})
 		return
 	}
-	cert, mspID, err := getCertAndMspID(request.PatientID)
+	dbClient, err := db.InitDB()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to init db: " + err.Error()})
+		return
+	}
+	dispending := db.Dispensing{
+		TdID:           tool.GenerateUUIDWithoutDashes(),
+		PrescriptionID: request.PrescriptionID,
+		PharmacyID:     request.PharmacyID,
+		Status:         "待取药",
+		Time:           request.ScheduledDispenseTime,
+	}
+	err = db.CreateDispensing(dbClient, &dispending)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create dispending: " + err.Error()})
+		return
+	}
+	cert, mspID, err := getCertAndMspID(userId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to get cert and msp id: " + err.Error()})
 		return
@@ -152,6 +183,16 @@ func ConfirmSignature(c *gin.Context) {
 	}
 	defer getaway.Close()
 	if signType == signTypePharmacy {
+		dbClient, err := db.InitDB()
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to init db: " + err.Error()})
+			return
+		}
+		err = db.UpdateDispensing(dbClient, id, "已取药")
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to update dispensing: " + err.Error()})
+			return
+		}
 		err = fabric.ConfirmPharmacySignature(getaway, id, tool.EncodeToString(sign))
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to confirm pharmacy signature: " + err.Error()})

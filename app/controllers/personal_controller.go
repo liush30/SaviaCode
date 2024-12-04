@@ -3,29 +3,20 @@
 
 package controllers
 
-//type CreatePersonalRecordRequest struct {
-//	UserID           string   `json:"userID"`           // 用户ID
-//	BaseInfo         string   `json:"baseInfo"`         // 基本信息
-//	ContactInfo      string   `json:"contactInfo"`      // 联系方式
-//	BaseCryptoExp    string   `json:"cryptoExp"`        // 基本信息的规则加密策略
-//	BaseAuth         []string `json:"auth"`             // 基本信息的授权机构列表
-//	ContactCryptoExp string   `json:"contactCryptoExp"` // 联系方式的规则加密策略
-//	ContactAuth      []string `json:"contactAuth"`      // 联系方式的授权机构列表
-//}
+//import "eldercare_health/app/internal/db"
+
+//	type CreatePersonalRecordRequest struct {
+//		UserID           string   `json:"userID"`           // 用户ID
+//		BaseInfo         string   `json:"baseInfo"`         // 基本信息
+//		ContactInfo      string   `json:"contactInfo"`      // 联系方式
+//		BaseCryptoExp    string   `json:"cryptoExp"`        // 基本信息的规则加密策略
+//		BaseAuth         []string `json:"auth"`             // 基本信息的授权机构列表
+//		ContactCryptoExp string   `json:"contactCryptoExp"` // 联系方式的规则加密策略
+//		ContactAuth      []string `json:"contactAuth"`      // 联系方式的授权机构列表
+//	}
 //
-//// 根据userid从数据库中获取
-//func getCertAndMspID(userID string) ([]byte, string, error) {
-//	//连接数据库
-//	dbClient, err := db.InitDB()
-//	if err != nil {
-//		return nil, "", err
-//	}
-//	cert, mspID, err := db.GetUserCertAndMspID(dbClient, userID)
-//	if err != nil {
-//		return nil, "", err
-//	}
-//	return cert, mspID, nil
-//}
+// // 根据userid从数据库中获取
+
 //func CreatePersonalRecord(c *gin.Context) {
 //	var request CreatePersonalRecordRequest
 //	if err := c.ShouldBindJSON(&request); err != nil {

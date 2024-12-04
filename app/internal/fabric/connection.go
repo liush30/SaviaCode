@@ -23,13 +23,13 @@ const (
 	org1MSPID = "Org1MSP"
 	org2MSPID = "Org2MSP"
 	// org1 tls证书路径
-	org1TlsCertPath = "/home/savia/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"
+	org1TlsCertPath = "/root/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"
 	// org1 peer endpoint
 	org1PeerEndpoint = "dns:///localhost:7051"
 	// org1 server name
 	org1ServerName = "peer0.org1.example.com"
 	// org2 tls证书路径
-	org2TlsCertPath = "/home/savia/fabric-samples/test-network/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt"
+	org2TlsCertPath = "/root/fabric-samples/test-network/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt"
 	// org2 peer endpoint
 	org2PeerEndpoint = "dns:///localhost:9051"
 	// org2 server name
